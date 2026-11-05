@@ -1,0 +1,269 @@
+{
+    "_ayuda": "Configuración de las Opciones de administrador de GEIR. Se lee en cada uso: los cambios aplican sin reiniciar. Marcadores disponibles: {cambio} {geir} {sprint} {sistema} {fecha} {fechaLarga} {usuario} {saludo} {especialista}.",
+    "sistema": "Sistema",
+    "valorTemporal": "TEMPORAL",
+    "tiposDeTrabajo": {
+        "_ayuda": "Tipo de Azure DevOps → columna Tipo. '*' es el valor para cualquier otro tipo.",
+        "Bug": "Corrección Defecto",
+        "Defect": "Corrección Defecto",
+        "Issue": "Corrección Defecto",
+        "*": "Funcionalidad"
+    },
+    "archivos": {
+        "geir": "{cambio} - GEIR.xlsx",
+        "sprint": "Sprint-{sprint}.xlsx",
+        "plantillaSprint": "plantillas/sprint.xlsx",
+        "formatoDescripcion": "{id}: {titulo}",
+        "derivados": [
+            {
+                "clave": "seguridad",
+                "hoja": "Diseño Solución",
+                "archivo": "{cambio} - Diseño de Solución (Seguridad).xlsx"
+            },
+            {
+                "clave": "tecnico",
+                "hoja": "Diseño Solución",
+                "archivo": "{cambio} - Diseño Solución (Técnico).xlsx"
+            },
+            {
+                "clave": "usuario",
+                "hoja": "Diseño Solución",
+                "archivo": "{cambio} - Diseño Solución (Usuario).xlsx"
+            },
+            {
+                "clave": "uat",
+                "hoja": "Plan de Pruebas UAT",
+                "archivo": "{cambio} - Pruebas de Usuario Funcional (UAT).xlsx"
+            },
+            {
+                "clave": "bitacora",
+                "hoja": "Bitacora Pruebas Técnicas",
+                "archivo": "{cambio} - Pruebas Técnicas (Bitácora de Pruebas).xlsx"
+            }
+        ]
+    },
+    "estimaciones": {
+        "_ayuda": "El plan va desde la fecha de la primera historia del GEIR hasta la de la última agregada. 'dias' fijos; 'desarrollo': true toma los días hábiles que queden hasta la última historia. 0 deja la fila vacía.",
+        "fechaPrimeraHistoria": [
+            "startDate",
+            "createdDate"
+        ],
+        "fechaUltimaHistoria": [
+            "targetDate",
+            "closedDate",
+            "createdDate"
+        ],
+        "feriados": [],
+        "fases": [
+            {
+                "actividad": "Refinamiento y Estimaciones",
+                "dias": 1
+            },
+            {
+                "actividad": "Análisis y Diseño (GEIR)",
+                "dias": 2
+            },
+            {
+                "actividad": "Desarrollo y Pruebas Unitarias",
+                "desarrollo": true,
+                "minimo": 1
+            },
+            {
+                "actividad": "Evaluación Capacidad",
+                "dias": 0
+            },
+            {
+                "actividad": "Pruebas QA",
+                "dias": 6
+            },
+            {
+                "actividad": "Pruebas Aceptación",
+                "dias": 4
+            },
+            {
+                "actividad": "Documentación del Cambio",
+                "dias": 2
+            },
+            {
+                "actividad": "Evaluación Seguridad (Pre Prod)*",
+                "dias": 0
+            },
+            {
+                "actividad": "Liberación y Pase a Producción",
+                "dias": 1
+            }
+        ]
+    },
+    "personas": {
+        "_ayuda": "Clave → \"Nombre <correo>\". Vacío en el repositorio: los valores reales van en config/geir.config.local.json (no se sube a git).",
+        "seguridad": "",
+        "equipo": "",
+        "cc1": "",
+        "cc2": "",
+        "cc3": "",
+        "cc4": "",
+        "especialista": "",
+        "dueno": "",
+        "usuario1": "",
+        "usuario2": "",
+        "usuario3": ""
+    },
+    "correos": {
+        "_ayuda": "Se crean como BORRADORES en el Outlook de quien usa GEIR (nunca se envían). El cuerpo sale de las plantillas HTML de la carpeta 'plantillas'; los textos de aquí llenan sus campos. En 'para'/'cc' usa claves de 'personas' o direcciones completas.",
+        "plantillas": "correos",
+        "programacion": "",
+        "firma": {
+            "nombre": "{usuario}",
+            "area": "",
+            "cargo": "",
+            "telefono": "",
+            "lema": "",
+            "logo": "assets/logo.png"
+        },
+        "aprobaciones": [
+            {
+                "clave": "seguridad",
+                "archivo": "{cambio} - Aprobación Diseño de Solución (Seguridad).eml",
+                "asunto": "{cambio} - Aprobación Diseño de Solución (Seguridad)",
+                "documento": "del Diseño de Solución (Seguridad)",
+                "adjunto": "seguridad",
+                "para": [
+                    "seguridad"
+                ],
+                "cc": [
+                    "equipo",
+                    "cc1",
+                    "cc2",
+                    "cc3",
+                    "cc4",
+                    "especialista"
+                ]
+            },
+            {
+                "clave": "tecnico",
+                "archivo": "{cambio} - Aprobación Diseño de Solución (Técnico).eml",
+                "asunto": "{cambio} - Aprobación Diseño de Solución (Técnico)",
+                "documento": "del Diseño de Solución (Técnico)",
+                "adjunto": "tecnico",
+                "para": [
+                    "especialista"
+                ],
+                "cc": [
+                    "equipo",
+                    "cc1",
+                    "cc2",
+                    "cc3",
+                    "cc4"
+                ]
+            },
+            {
+                "clave": "usuario",
+                "archivo": "{cambio} - Aprobación Diseño de Solución (Usuario).eml",
+                "asunto": "{cambio} - Aprobación Diseño de Solución (Usuario)",
+                "documento": "del Diseño de Solución (Usuario)",
+                "adjunto": "usuario",
+                "para": [
+                    "dueno",
+                    "usuario1",
+                    "usuario2"
+                ],
+                "cc": [
+                    "usuario3",
+                    "cc1",
+                    "cc2",
+                    "cc3",
+                    "cc4",
+                    "especialista",
+                    "equipo"
+                ]
+            },
+            {
+                "clave": "bitacora",
+                "archivo": "{cambio} - Aprobación Pruebas Técnicas (Bitácora de Pruebas).eml",
+                "asunto": "{cambio} - Aprobación Pruebas Técnicas (Bitácora de Pruebas)",
+                "documento": "de las Pruebas Técnicas (Bitácora de Pruebas)",
+                "adjunto": "bitacora",
+                "para": [
+                    "especialista"
+                ],
+                "cc": [
+                    "equipo",
+                    "cc1",
+                    "cc4",
+                    "cc3"
+                ]
+            },
+            {
+                "clave": "uat",
+                "archivo": "{cambio} - Aprobación Pruebas de Usuario Funcional (UAT).eml",
+                "asunto": "{cambio} - Aprobación Pruebas de Usuario Funcional (UAT)",
+                "documento": "de las Pruebas de Usuario Funcional (UAT)",
+                "adjunto": "uat",
+                "para": [
+                    "dueno"
+                ],
+                "cc": [
+                    "equipo",
+                    "cc1",
+                    "cc2",
+                    "cc3",
+                    "cc4"
+                ]
+            }
+        ],
+        "foro": {
+            "archivo": "{cambio} - Aviso de pase a producción.eml",
+            "asunto": "Aviso de pase a producción",
+            "para": [
+                "especialista"
+            ],
+            "cc": [
+                "usuario2",
+                "usuario3",
+                "usuario1"
+            ],
+            "saludo": "Saludos {especialista}",
+            "estatusGeir": "En proceso",
+            "hora": "",
+            "ingenieroResponsable": "{usuario}",
+            "usuarioDueno": "",
+            "usuarioCertifica": "",
+            "recursosBackend": [
+                "(completar: archivos .jar / configuración modificados)"
+            ],
+            "recursosFrontend": [
+                "bundle.js"
+            ],
+            "especialista": "",
+            "etiquetaEspecialista": "Especialista"
+        }
+    },
+    "compilacion": {
+        "_ayuda": "Opción 'Rama' de administrador: compila solo lo que cambiaron los commits de la rama (comparada con ramaBase; vacío = rama por defecto de GitLab) que mencionan las historias de la GEIR (tareas del documento, sus historias padre y las de Requerimientos). recompilarDependientes=true también recompila los proyectos que usan una librería cambiada (una librería compartida) y deja los binarios en la carpeta Deploy junto al GEIR. Maven usa el comando del README del proyecto si trae uno con package/install; si no, 'comando'. Las reglas eligen la carpeta de Deploy por artifactId (la primera que coincide); destino vacío = solo se instala en el repositorio Maven local (librerías compartidas).",
+        "ramaBase": "",
+        "recompilarDependientes": false,
+        "maven": {
+            "comando": "mvn clean install -DskipTests",
+            "reglas": [
+                {
+                    "coincide": "-core$",
+                    "destino": ""
+                },
+                {
+                    "coincide": "interfaces",
+                    "destino": "backend/jar_interfaces"
+                },
+                {
+                    "coincide": ".*",
+                    "destino": "backend"
+                }
+            ]
+        },
+        "front": {
+            "instalar": "",
+            "comando": "npm run buildprod",
+            "salida": "dist/js",
+            "destino": "frontend/dist/js"
+        }
+    }
+}

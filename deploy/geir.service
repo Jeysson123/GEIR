@@ -1,0 +1,26 @@
+# systemd: /etc/systemd/system/geir.service
+#   sudo systemctl daemon-reload && sudo systemctl enable --now geir
+#   journalctl -u geir -f
+[Unit]
+Description=GEIR
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=geir
+Group=geir
+WorkingDirectory=/opt/geir
+EnvironmentFile=-/opt/geir/.env
+ExecStart=/usr/bin/node src/server/server.js
+Restart=on-failure
+RestartSec=5
+# Temporary files of each session (OneDrive downloads) go to a private /tmp, removed on stop.
+PrivateTmp=true
+NoNewPrivileges=true
+ProtectSystem=full
+ProtectHome=read-only
+ReadWritePaths=/opt/geir
+
+[Install]
+WantedBy=multi-user.target

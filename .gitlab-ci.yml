@@ -1,0 +1,82 @@
+# GEIR · CI/CD
+#
+#   verify   → types (tsc) and the interface bundle build
+#   test     → unit tests (node:test, no extra dependencies)
+#   package  → deployable bundle release/geir-<version>.zip: compiled JavaScript, built
+#              interface, config/, templates/ and production node_modules. It needs only
+#              Node.js 18+ and Microsoft Edge on the target machine.
+#   publish  → (manual) uploads the bundle to this project's Package Registry.
+#
+# Node 18 is the version on the target VMs. Browsers are not downloaded: GEIR
+# drives the Microsoft Edge already installed on Windows.
+
+image: node:18-bullseye
+
+variables:
+  PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
+  npm_config_cache: "$CI_PROJECT_DIR/.npm"
+  npm_config_audit: "false"
+  npm_config_fund: "false"
+
+cache:
+  key:
+    files:
+      - package-lock.json
+  paths:
+    - .npm/
+
+stages:
+  - verify
+  - test
+  - package
+  - publish
+
+.install:
+  before_script:
+    - node --version
+    - npm ci
+
+typecheck:
+  stage: verify
+  extends: .install
+  script:
+    - npm run typecheck
+    - npm run web:build
+
+unit-tests:
+  stage: test
+  extends: .install
+  script:
+    - npm run test:unit
+
+package:
+  stage: package
+  extends: .install
+  script:
+    - npm run build
+    - npm run package
+  artifacts:
+    name: "geir-$CI_COMMIT_SHORT_SHA"
+    paths:
+      - release/*.zip
+    expire_in: 30 days
+  rules:
+    - if: $CI_COMMIT_TAG
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: manual
+      allow_failure: true
+
+publish:
+  stage: publish
+  needs: [package]
+  when: manual
+  script:
+    - ZIP=$(ls release/*.zip | head -n 1)
+    - NAME=$(basename "$ZIP" .zip)
+    - VERSION=${NAME#geir-}
+    - 'curl --fail --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file "$ZIP" "$CI_API_V4_URL/projects/$CI_PROJECT_ID/packages/generic/geir/$VERSION/$NAME.zip"'
+    - echo "Publicado $NAME.zip en Deploy > Package Registry"
+  rules:
+    - if: $CI_COMMIT_TAG
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH

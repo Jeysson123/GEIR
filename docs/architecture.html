@@ -1,0 +1,246 @@
+<!doctype html>
+<!-- Source of architecture.png: render this page at 1600px wide (scale 2) and save it next to it. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>GEIR Architecture</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #2457c5; --red-soft: #e8effc; --ink: #1d2730; --muted: #5f6c78; --line: #d8dee4; --bg: #f6f7f9;
+    --ui: #6d4ed8; --ui-soft: #f1edfd; --srv: #1d2730; --srv-soft: #eef1f4; --app: #1f6feb; --app-soft: #e8f1fe;
+    --dom: #1a7f37; --dom-soft: #e6f4ea; --infra: #b35900; --infra-soft: #fdf1e3; --ext: #3d4a57; --ext-soft: #eef1f4;
+    --cfg: #7a3fb0; --cfg-soft: #f4ecfb;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.45 Inter, Segoe UI, sans-serif; }
+  .page { width: 1600px; padding: 40px 48px 36px; }
+  code, .mono { font-family: 'JetBrains Mono', Consolas, monospace; font-size: 12px; }
+  header { display: flex; align-items: center; gap: 18px; }
+  header img { width: 64px; height: 64px; }
+  h1 { margin: 0; font-size: 40px; font-weight: 800; letter-spacing: -0.5px; }
+  h1 span { color: var(--red); }
+  .tag-line { color: var(--muted); margin-top: 4px; font-size: 15px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 8px; }
+  .legend span { background: #fff; border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; font-size: 12px; font-weight: 600; }
+  .legend i { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 6px; vertical-align: 0; }
+  h2 { display: flex; align-items: center; gap: 12px; margin: 30px 0 4px; font-size: 26px; }
+  h2 .n { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 8px; background: var(--red); color: #fff; font-size: 18px; }
+  .sub { color: var(--muted); margin: 0 0 14px 46px; }
+  .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .card { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; }
+  .card h4 { margin: 6px 0 4px; font-size: 16px; }
+  .card p { margin: 0 0 8px; color: var(--muted); font-size: 13px; }
+  .num { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 6px; background: var(--ui); color: #fff; font-weight: 700; font-size: 12px; }
+  .file { color: var(--ui); font-family: 'JetBrains Mono', monospace; font-size: 12px; margin-left: 4px; }
+  .call { background: var(--ui-soft); border-radius: 6px; padding: 8px 10px; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; line-height: 1.6; }
+  .layer { border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px 16px; margin-top: 12px; position: relative; }
+  .ltag { display: inline-block; font-weight: 700; font-size: 12px; letter-spacing: .5px; text-transform: uppercase; background: #fff; border-radius: 999px; padding: 3px 12px; margin-bottom: 10px; }
+  .boxes { display: grid; gap: 10px; }
+  .box { background: #fff; border-radius: 8px; padding: 10px 12px; border: 1px solid rgba(0,0,0,.06); font-size: 12.5px; color: var(--muted); }
+  .box h5 { margin: 0 0 4px; font-size: 14px; color: var(--ink); }
+  .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 7px; }
+  .arrow { display: flex; justify-content: center; gap: 12px; align-items: center; margin: 10px 0 0; color: var(--muted); }
+  .pill { background: #fff; border: 1px solid var(--line); border-radius: 999px; padding: 3px 12px; font-size: 12px; }
+  .row { display: flex; gap: 12px; margin-top: 12px; }
+  .flow { display: grid; grid-template-columns: 260px 1fr; gap: 12px; margin-top: 10px; }
+  .flow .head { border-left: 4px solid var(--red); }
+  .steps { display: flex; align-items: stretch; gap: 8px; }
+  .step { flex: 1; background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; font-size: 12.5px; color: var(--muted); }
+  .step h5 { margin: 0 0 4px; font-size: 13.5px; color: var(--ink); }
+  .to { align-self: center; color: var(--muted); font-size: 18px; }
+  .rules { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .rule h4 { color: var(--red); }
+  footer { margin-top: 28px; text-align: center; color: var(--muted); font-size: 12.5px; line-height: 1.9; }
+  footer b { color: var(--ink); }
+</style>
+</head>
+<body>
+<div class="page">
+<header>
+  <img src="../config/assets/logo.png" alt="">
+  <div>
+    <h1>GEIR <span>·</span> Architecture</h1>
+    <div class="tag-line">From the screen to the Excel file in OneDrive, the drafts in Outlook and the binaries in Deploy — layers, files, flows and security in one map.</div>
+  </div>
+</header>
+<div class="legend">
+  <span><i style="background:var(--ui)"></i>Interface (web/)</span>
+  <span><i style="background:var(--red)"></i>Security</span>
+  <span><i style="background:var(--srv)"></i>Server (src/server)</span>
+  <span><i style="background:var(--app)"></i>Application (src/application)</span>
+  <span><i style="background:var(--dom)"></i>Domain (src/domain)</span>
+  <span><i style="background:var(--infra)"></i>Infrastructure (src/infrastructure)</span>
+  <span><i style="background:var(--ext)"></i>External services</span>
+  <span><i style="background:var(--cfg)"></i>Configuration (config/)</span>
+</div>
+
+<h2><span class="n">1</span>What the user does</h2>
+<p class="sub">Each card shows the screen, the action and the exact call it makes. No credential is saved to disk.</p>
+<div class="grid4">
+  <div class="card"><span class="num">1</span><span class="file">index.jsx</span><h4>Signs in</h4><p>Network user, Microsoft e-mail and password.</p>
+    <div class="call">POST /api/auth/login<br>→ login() validated with Azure DevOps<br>→ session only in memory</div></div>
+  <div class="card"><span class="num">2</span><span class="file">Dashboard.jsx</span><h4>Opens the GEIR</h4><p>OneDrive link. A folder without a GEIR gets one from the template.</p>
+    <div class="call">POST /api/document/open<br>→ openDocument() → loadOrCreate()<br>→ listTasks()</div></div>
+  <div class="card"><span class="num">3</span><span class="file">— automatic —</span><h4>Microsoft 365</h4><p>GEIR types code, e-mail and password; the user only approves in Authenticator.</p>
+    <div class="call">GET /api/microsoft/status (every 2 s)<br>→ signInMicrosoft() · device code<br>→ token in memory + sessionStorage</div></div>
+  <div class="card"><span class="num">4</span><span class="file">Dashboard.jsx</span><h4>Looks up a task</h4><p>New: drafted from Azure DevOps and GitLab. Existing: opened for editing.</p>
+    <div class="call">POST /api/tasks/lookup<br>→ lookupTask() → getWorkItem()<br>→ findChanges() → buildDraft()</div></div>
+  <div class="card"><span class="num">5</span><span class="file">TaskEditor.jsx</span><h4>Edits and saves</h4><p>4 tabs: description, design, test log (evidence) and UAT.</p>
+    <div class="call">POST /api/tasks/save<br>→ saveTask() → upsertTask()<br>→ editOnline() on OneDrive</div></div>
+  <div class="card"><span class="num">6</span><span class="file">Dashboard.jsx</span><h4>Deletes a task</h4><p>The × on each chip. Renumbers the list in the 4 sheets.</p>
+    <div class="call">POST /api/tasks/delete<br>→ deleteTask() →<br>GeirDocument.deleteTask()</div></div>
+  <div class="card"><span class="num">7</span><span class="file">AdminPanel.jsx</span><h4>Admin options</h4><p>Requirements ↔ stories, plan, approval documents, sprint list and drafts.</p>
+    <div class="call">POST /api/admin/generate<br>→ adminGenerate()<br>→ 7 files + 6 Outlook drafts</div></div>
+  <div class="card"><span class="num">8</span><span class="file">AdminPanel.jsx</span><h4>Compiles a branch</h4><p>Pull, builds only what the GEIR's commits touch, binaries to Deploy.</p>
+    <div class="call">POST /api/admin/build → startBuild()<br>job queue · GET /api/admin/build/:id<br>every 2 s</div></div>
+</div>
+
+<h2><span class="n">2</span>How a request travels</h2>
+<p class="sub">Top to bottom. Each layer only uses the ones below; the domain knows nothing about the network or the users.</p>
+<div class="layer" style="background:var(--ui-soft)">
+  <span class="ltag" style="color:var(--ui)">Interface · web/src</span>
+  <div class="boxes" style="grid-template-columns: 2fr 1fr 1fr">
+    <div class="box"><h5><i class="dot" style="background:var(--ui)"></i>Screens</h5><code>index.jsx</code> login · <code>Dashboard.jsx</code> document, tasks, Microsoft · <code>TaskEditor.jsx</code> 4 tabs · <code>AdminPanel.jsx</code> documents, drafts, branch build</div>
+    <div class="box"><h5><i class="dot" style="background:var(--ui)"></i>api.js</h5>fetch + <code>Authorization: Bearer</code>; keeps the <code>X-GEIR-Microsoft</code> header</div>
+    <div class="box"><h5><i class="dot" style="background:var(--ui)"></i>storage.js</h5>session · Microsoft token · user · path · panel draft (sessionStorage only)</div>
+  </div>
+</div>
+<div class="arrow"><span class="pill">HTTPS (nginx) → JSON</span>↓<span class="pill">session token on every call</span></div>
+<div class="layer" style="background:var(--red-soft);border-color:#c5d5f5">
+  <span class="ltag" style="color:var(--red)">Security · always crossed</span>
+  <div class="boxes" style="grid-template-columns: repeat(5, 1fr)">
+    <div class="box"><h5><i class="dot" style="background:var(--red)"></i>requireSession</h5>random token → Session; closed after 8 h idle</div>
+    <div class="box"><h5><i class="dot" style="background:var(--red)"></i>limitLogin</h5>10 attempts / 15 min per address</div>
+    <div class="box"><h5><i class="dot" style="background:var(--red)"></i>Nothing on disk</h5>password, tokens and cookies only in the session's memory</div>
+    <div class="box"><h5><i class="dot" style="background:var(--red)"></i>OneDrive only</h5><code>GEIR_ALLOW_LOCAL_PATHS=false</code>: no server paths</div>
+    <div class="box"><h5><i class="dot" style="background:var(--red)"></i>Headers</h5>X-Frame-Options · nosniff · no-referrer · no x-powered-by</div>
+  </div>
+</div>
+<div class="arrow">↓</div>
+<div class="layer" style="background:var(--srv-soft)">
+  <span class="ltag" style="color:var(--srv)">Server · src/server</span>
+  <div class="boxes" style="grid-template-columns: 3fr 1fr">
+    <div class="box"><h5><i class="dot" style="background:var(--srv)"></i>server.ts — 15 routes</h5><code>/api/auth/login · me · logout</code> · <code>/api/microsoft/status</code> · <code>/api/document/open</code> · <code>/api/tasks/lookup · save · delete</code> · <code>/api/admin/defaults · generate · files/:name · build-defaults · build · build/:id</code> · <code>/brand/logo.png</code></div>
+    <div class="box"><h5><i class="dot" style="background:var(--srv)"></i>version.ts</h5>version on the console and the page</div>
+  </div>
+</div>
+<div class="arrow">↓</div>
+<div class="layer" style="background:var(--app-soft)">
+  <span class="ltag" style="color:var(--app)">Application · src/application</span>
+  <div class="boxes" style="grid-template-columns: 1.3fr 1.3fr 1.3fr 1fr">
+    <div class="box"><h5><i class="dot" style="background:var(--app)"></i>geir.service.ts</h5>login · openDocument · lookupTask · saveTask · deleteTask · editOnline · withMicrosoft · saveOutlookDraft</div>
+    <div class="box"><h5><i class="dot" style="background:var(--app)"></i>admin.service.ts</h5>adminGenerate: pairs → relation → plan → GEIR → files → drafts</div>
+    <div class="box"><h5><i class="dot" style="background:var(--app)"></i>build.service.ts</h5>startBuild: branch → GEIR commits → mvn / npm run buildprod → Deploy (verified upload)</div>
+    <div class="box"><h5><i class="dot" style="background:var(--app)"></i>session.ts · mock-data.ts</h5>per-user Session (credentials, browser contexts, temp folder) · demo data</div>
+  </div>
+</div>
+<div class="arrow"><span class="pill">GEIR rules, no network</span>↓<span class="pill">calls to services, with that person's token</span></div>
+<div class="row">
+  <div class="layer" style="background:var(--dom-soft);flex:1;margin-top:0">
+    <span class="ltag" style="color:var(--dom)">Domain · src/domain</span>
+    <div class="boxes" style="grid-template-columns: 1fr 1fr">
+      <div class="box"><h5><i class="dot" style="background:var(--dom)"></i>document.ts</h5>GeirDocument: listTasks · readTask · upsertTask · deleteTask · setRequestIds · setWorkPlan · tidyDescription</div>
+      <div class="box"><h5><i class="dot" style="background:var(--dom)"></i>xlsx/</h5><code>package.ts</code> .xlsx parts, keepOnlySheet · <code>worksheet.ts</code> cells, rows, merges, images</div>
+      <div class="box"><h5><i class="dot" style="background:var(--dom)"></i>draft.ts · change-summary.ts</h5>task draft (benefit, Given/When/Then) and backend/frontend summary of changes</div>
+      <div class="box"><h5><i class="dot" style="background:var(--dom)"></i>admin/ · build/</h5><code>requirements</code> · <code>estimates</code> · <code>sprint-list</code> · <code>email</code> · <code>config</code> · <code>projects</code> what to build, jar from the pom, Deploy folder</div>
+    </div>
+  </div>
+  <div class="layer" style="background:var(--infra-soft);flex:1;margin-top:0">
+    <span class="ltag" style="color:var(--infra)">Infrastructure · src/infrastructure</span>
+    <div class="boxes" style="grid-template-columns: 1fr 1fr">
+      <div class="box"><h5><i class="dot" style="background:var(--infra)"></i>azure-devops/</h5>AzureDevOpsClient: verify · getWorkItem · getSummary (parent, dates, type)</div>
+      <div class="box"><h5><i class="dot" style="background:var(--infra)"></i>gitlab/</h5>GitLabClient: LDAP signIn · findChanges (MRs, commits, branches, diffs)</div>
+      <div class="box"><h5><i class="dot" style="background:var(--infra)"></i>microsoft/</h5><code>microsoft-token</code> device code · <code>microsoft-login</code> · <code>onedrive-files.client</code> upload in parts · <code>outlook-drafts.client</code></div>
+      <div class="box"><h5><i class="dot" style="background:var(--infra)"></i>build/ · config/</h5><code>git-repo</code> fetch, pull, commits, merges · <code>shell</code> git / mvn / npm with log · <code>environment.ts</code></div>
+    </div>
+  </div>
+</div>
+<div class="arrow">↓<span class="pill">each session with its own browser and HTTP client</span>↓</div>
+<div class="row">
+  <div class="layer" style="background:var(--ext-soft);flex:2;margin-top:0">
+    <span class="ltag" style="color:var(--ext)">External services</span>
+    <div class="boxes" style="grid-template-columns: repeat(5, 1fr)">
+      <div class="box"><h5>Azure DevOps</h5>work items, parents, images · Windows auth</div>
+      <div class="box"><h5>GitLab + git</h5>API v4: MRs, commits · source repository clone / pull</div>
+      <div class="box"><h5>Microsoft Entra</h5>device code · refresh token</div>
+      <div class="box"><h5>SharePoint</h5>REST: download, recycle, upload in parts</div>
+      <div class="box"><h5>Graph</h5><code>/me/messages</code>: creates drafts, never <code>/send</code></div>
+    </div>
+  </div>
+  <div class="layer" style="background:var(--cfg-soft);flex:1;margin-top:0">
+    <span class="ltag" style="color:var(--cfg)">Configuration · no rebuild</span>
+    <div class="box"><code>config/geir.config.json</code> files, phases, e-mails, build rules<br><code>config/geir.config.local.json</code> your people and e-mails (git-ignored)<br><code>config/correos/*.html</code> · <code>plantillas/sprint.xlsx</code> · <code>templates/N - GEIR.xlsx</code></div>
+  </div>
+</div>
+
+<h2><span class="n">3</span>Main flows</h2>
+<p class="sub">What happens inside when the user presses a button.</p>
+<div class="flow">
+  <div class="card head"><h4>Save to OneDrive</h4><p><code>editOnline()</code> · geir.service.ts</p></div>
+  <div class="steps">
+    <div class="step"><h5>1 · Download</h5>read() with the user's token</div><div class="to">→</div>
+    <div class="step"><h5>2 · Modify</h5>copy in the session's temp folder; GeirDocument edits the XML</div><div class="to">→</div>
+    <div class="step"><h5>3 · Recycle bin</h5>recycle(): the original stays recoverable</div><div class="to">→</div>
+    <div class="step"><h5>4 · Upload</h5>write() of the modified file</div><div class="to">→</div>
+    <div class="step"><h5>5 · Clean up</h5>deletes the copy; if the upload fails it is kept</div>
+  </div>
+</div>
+<div class="flow">
+  <div class="card head"><h4>Microsoft 365 sign-in</h4><p><code>signInMicrosoft()</code> · first time only</p></div>
+  <div class="steps">
+    <div class="step"><h5>1 · Code</h5>MicrosoftToken.signIn() asks for a device code</div><div class="to">→</div>
+    <div class="step"><h5>2 · GEIR types it</h5>microsoft-login.ts: code, e-mail and password in a hidden browser</div><div class="to">→</div>
+    <div class="step"><h5>3 · Authenticator</h5>the screen shows the number; the user approves</div><div class="to">→</div>
+    <div class="step"><h5>4 · Token</h5>in the session's memory and sessionStorage (X-GEIR-Microsoft)</div>
+  </div>
+</div>
+<div class="flow">
+  <div class="card head"><h4>New task</h4><p><code>lookupTask()</code> → <code>saveTask()</code></p></div>
+  <div class="steps">
+    <div class="step"><h5>Azure DevOps</h5>title, description, criteria and discussion images</div><div class="to">→</div>
+    <div class="step"><h5>GitLab</h5>MRs, commits and branches that mention the ID; files and diff</div><div class="to">→</div>
+    <div class="step"><h5>buildDraft()</h5>benefit, technical design by layer, Given/When/Then cases</div><div class="to">→</div>
+    <div class="step"><h5>upsertTask()</h5>writes the 4 sheets with the template's format</div>
+  </div>
+</div>
+<div class="flow">
+  <div class="card head"><h4>Admin options</h4><p><code>adminGenerate()</code> · admin.service.ts</p></div>
+  <div class="steps">
+    <div class="step"><h5>1 · Pairs</h5>parseRequirementPairs(): requirement ↔ story</div><div class="to">→</div>
+    <div class="step"><h5>2 · Relation</h5>the task IS the story or its parent in Azure is</div><div class="to">→</div>
+    <div class="step"><h5>3 · Plan</h5>computePlan(): business days, first to last story</div><div class="to">→</div>
+    <div class="step"><h5>4 · GEIR</h5>request IDs, labels, plan, sprint, tidyDescription</div><div class="to">→</div>
+    <div class="step"><h5>5 · Files</h5>GEIR copy, 5 single-sheet documents, Sprint-{sprint}.xlsx</div><div class="to">→</div>
+    <div class="step"><h5>6 · Drafts</h5>6 in Outlook (Graph); .eml in the folder if it fails</div>
+  </div>
+</div>
+<div class="flow">
+  <div class="card head"><h4>Compile binaries</h4><p><code>startBuild()</code> · build.service.ts</p></div>
+  <div class="steps">
+    <div class="step"><h5>1 · Branch</h5>pull in the local clone (or clone GitLab), long paths on</div><div class="to">→</div>
+    <div class="step"><h5>2 · GEIR commits</h5>commits and merges that name the GEIR's stories</div><div class="to">→</div>
+    <div class="step"><h5>3 · Projects</h5>nearest pom.xml / package.json with buildprod; shared core only installed</div><div class="to">→</div>
+    <div class="step"><h5>4 · Build</h5>README mvn command · jar from target/ as the pom says · npm run buildprod</div><div class="to">→</div>
+    <div class="step"><h5>5 · Deploy</h5>backend · backend/jar_interfaces · frontend/dist/js; size verified</div>
+  </div>
+</div>
+
+<h2><span class="n">4</span>Rules that never break</h2>
+<p class="sub">Each one is backed by the design and by the tests in <code>tests/unit</code>.</p>
+<div class="rules">
+  <div class="card rule"><h4>No e-mail is ever sent</h4><p>Only drafts are created with <code>POST /me/messages</code>; there is no call to <code>/send</code> anywhere. The person reviews and sends.</p></div>
+  <div class="card rule"><h4>No credential touches the disk</h4><p>Password, Microsoft token, GitLab and Azure cookies live in the <code>Session</code>; git gets the password through environment variables only. The browser uses only <code>sessionStorage</code>.</p></div>
+  <div class="card rule"><h4>Every user is isolated</h4><p>Browser contexts, HTTP client, temp folder, generated files and builds are per session. Nobody sees another person's work.</p></div>
+  <div class="card rule"><h4>Nothing is guessed</h4><p>A task belongs to a requirement only if it is the story or its parent is; only commits naming the GEIR's stories are compiled.</p></div>
+  <div class="card rule"><h4>The Excel keeps its format</h4><p>Edited at XML level: in-cell images, merges, validations and styles stay. New rows copy the first row's format.</p></div>
+  <div class="card rule"><h4>A failure never loses the document</h4><p>The original goes to the OneDrive recycle bin only after the copy is modified; a failed upload keeps the copy.</p></div>
+</div>
+
+<footer>
+  <b>Quality:</b> <code>npm run typecheck</code> · <code>npm test</code> (32 unit tests) · <code>.gitlab-ci.yml</code>: verify → test → package → publish<br>
+  <b>Deployment:</b> <code>npm run build</code> + <code>npm run package</code> → <code>release/geir-&lt;version&gt;.zip</code> · Linux: <code>deploy/geir.service</code> + <code>deploy/nginx-geir.conf</code> (HTTPS) · Windows: <code>iniciar-geir.cmd</code>
+</footer>
+</div>
+</body>
+</html>

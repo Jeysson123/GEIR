@@ -1,0 +1,20 @@
+.env
+node_modules
+/dist
+playwright-report
+test-results
+web/dist
+/build
+/release
+
+# Saved sign-ins (cookies / tokens): never commit or ship
+*.storage.json
+*.token.json
+
+# Real people, e-mails and signature of this installation (see config/geir.config.local.json)
+*.local.json
+.env.local
+
+# An installation's own logo and GEIR template
+*.local.png
+*.local.xlsx

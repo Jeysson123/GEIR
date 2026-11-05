@@ -1,0 +1,38 @@
+{
+  "name": "geir",
+  "version": "1.0.0",
+  "description": "GEIR: change documentation, approvals and release binaries from Azure DevOps, GitLab and OneDrive",
+  "private": true,
+  "scripts": {
+    "start": "node scripts/build-web.js && node -r ts-node/register/transpile-only src/server/server.ts",
+    "demo": "node scripts/build-web.js && node -r ts-node/register/transpile-only src/server/server.ts --mock",
+    "web:build": "node scripts/build-web.js",
+    "web:watch": "node scripts/build-web.js --watch",
+    "typecheck": "tsc --noEmit -p .",
+    "test:unit": "node -r ts-node/register/transpile-only tests/unit/run.ts",
+    "build": "node -e \"require('fs').rmSync('build', { recursive: true, force: true })\" && tsc -p tsconfig.build.json && node scripts/build-web.js",
+    "package": "node scripts/package.js",
+    "template": "node -r ts-node/register/transpile-only scripts/build-template.ts",
+    "test": "npm run test:unit"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/express": "^4.17.25",
+    "@types/node": "^26.1.1",
+    "esbuild": "^0.28.2",
+    "esbuild-wasm": "^0.28.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "@playwright/test": "1.61.1",
+    "@xmldom/xmldom": "^0.9.12",
+    "dotenv": "^17.4.2",
+    "exceljs": "^4.4.0",
+    "express": "^4.22.3",
+    "jszip": "^3.10.2",
+    "react": "^15.7.0",
+    "react-dom": "^15.7.0"
+  }
+}
